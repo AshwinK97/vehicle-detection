@@ -50,7 +50,7 @@ def detectRegionsOfInterest(frame, cascade):
     frameHeight, frameWidth, fdepth = frame.shape
 
     # haar detection.
-    cars = cascade.detectMultiScale(frame, 1.2, 1)
+    cars = cascade.detectMultiScale(frame, 1.1, 4)
 
     newRegions = []
     minY = int(frameHeight*0.3)
@@ -72,7 +72,7 @@ def detectRegionsOfInterest(frame, cascade):
     
 def detectCars(filename):
     rectangles = []
-    cascade = cv2.CascadeClassifier('cars.xml')
+    cascade = cv2.CascadeClassifier('cascades/cars.xml')
     vc = cv2.VideoCapture(filename)
     
     if vc.isOpened():
@@ -104,4 +104,4 @@ def detectCars(filename):
         cv2.imshow("Result",frame)
         cv2.waitKey(1)
 
-detectCars('video2.mp4')
+detectCars('videos/video3.mp4')
