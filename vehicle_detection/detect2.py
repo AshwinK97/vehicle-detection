@@ -1,29 +1,33 @@
 import cv2
 
-# store each detected vehicles info in 2D list
-vehicles = [] # [xPos, yPos, width, height, area, speed, age]
+cv2Font = cv2.FONT_HERSHEY_SIMPLEX
+windowName = 'feed'
+vehicles = [] # 2D list, each item => [xPos, yPos, width, height, area, speed, age]
+
 
 def getArea(x, y, w, h):
     return (x+w) * (y+h)
 
 # get velocity assuming video is in 30fps
 def getSpeed(a1, a2):
-    return (a2 - a1)/(1/30)
+    # return (a2 - a1)/(1/30)
+    return (a2 - a1) / (30)
 
 def toString(n):
     return str(n)
 
+# add vehicles to list or update existing vehicle with new position and speed
 def addVehicle(x, y, w, h, a):
     # check if x, y, w, h are within 20 - 50 px of existing vehicle
     for v in vehicles:
-        if abs(x-v[0]) <= 50 and abs(y-v[1]) <= 50:
+        if abs(x-v[0]) <= 25 and abs(y-v[1]) <= 25:
             area = getArea(x, y, w, h)
             speed = getSpeed(area, v[4])
-            vehicles[vehicles.index(v)] = [x, y, w, h, area, speed, 0] # updated vehicle
+            vehicles[vehicles.index(v)] = [x, y, w, h, area, speed, 0] # update vehicle
             return
-    # if similar vehicle is not found, add new one
-    vehicles.append([x, y, w, h, a, 0, 0])
+    vehicles.append([x, y, w, h, a, 0, 0]) # add new vehicle
 
+# increase vehicle age until 30 (1s), then remove
 def vehicleAge():
     for v in vehicles:
         if v[6] >= 30:
@@ -34,12 +38,11 @@ def vehicleAge():
 def printVehicles():
     for i, v in enumerate(vehicles):
         print("%d) x: %d  y: %d  velocity: %.2f px/s" % (i+1, v[0], v[1], float(v[5])))
-    print("\n")
+    print("")
 
 
-cv2Font = cv2.FONT_HERSHEY_SIMPLEX
 car_cascade = cv2.CascadeClassifier('cars.xml')
-vc = cv2.VideoCapture('video2.mp4')
+vc = cv2.VideoCapture('video7.mp4')
 if vc.isOpened():
     rval, frame = vc.read()
 else:
@@ -65,9 +68,9 @@ while rval:
     printVehicles()
     
     # Display frames in a window
-    cv2.namedWindow('feed', cv2.WINDOW_NORMAL)
-    cv2.resizeWindow('feed', 1280, 750)
-    cv2.imshow('feed', frame)
+    cv2.namedWindow(windowName, cv2.WINDOW_NORMAL)
+    cv2.resizeWindow(windowName, 1280, 750)
+    cv2.imshow(windowName, frame)
     
     # Wait for Esc key to stop
     if cv2.waitKey(33) == 27:
