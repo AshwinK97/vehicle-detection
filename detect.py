@@ -3,7 +3,7 @@ import cv2
 cv2Font = cv2.FONT_HERSHEY_SIMPLEX
 window = 'feed'
 carCascadePath = 'cascades/cars.xml'
-videoPath = 'videos/video.mp4'
+videoPath = 'videos/video3.mp4'
 vehicles = [] # 2D list, each item => [xPos, yPos, width, height, area, speed, age]
 
 
@@ -32,7 +32,7 @@ def addVehicle(x, y, w, h, a):
 # increase vehicle age until 30 (1s), then remove
 def vehicleAge():
     for v in vehicles:
-        if v[6] >= 30:
+        if v[6] >= 15:
             vehicles.remove(v)
         else:
             v[6] += 1
@@ -44,8 +44,8 @@ def printVehicles():
 
 #########################################################################################
 
-car_cascade = cv2.CascadeClassifier('cascades/cars.xml')
-vc = cv2.VideoCapture('videos/video7.mp4')
+car_cascade = cv2.CascadeClassifier(carCascadePath)
+vc = cv2.VideoCapture(videoPath)
 if vc.isOpened(): rval, frame = vc.read()
 else: rval = False
 
